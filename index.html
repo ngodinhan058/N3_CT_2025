@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanji Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question h3 {
+            margin-bottom: 10px;
+        }
+        .answers button {
+            margin-right: 10px;
+            padding: 10px;
+            border: none;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+        .answers button:hover {
+            background-color: #dcdcdc;
+        }
+        .answers button.correct {
+            background-color: #c8e6c9;
+        }
+        .answers button.incorrect {
+            background-color: #ffcdd2;
+        }
+        .correct-answer {
+            margin-top: 10px;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Kanji Quiz</h1>
+    <button onclick="window.location.href='hiraganaToKanji.html'">Hiragana -> Kanji</button>
+    <p>Chọn Hiragana đúng cho Kanji đã cho. Mỗi câu trả lời đúng sẽ cho bạn +1 điểm.</p>
+    <h2 id="score">Điểm: 0</h2>
+    <div id="quiz"></div>
+    <h2 id="score">Điểm: 0</h2>
+
+    <script>
+        const quizData = [
+            { kanji: "性格", correct: "せいかく", options: ["せいかく", "しんぱい", "れんあい", "じゅんび"] },
+            { kanji: "優勝", correct: "ゆうしょう", options: ["ゆうしょう", "ごはん", "まんぞく", "あたま"] },
+            { kanji: "心配", correct: "しんぱい", options: ["しんぱい", "きょか", "くすり", "せいかつ"] },
+            { kanji: "恋愛", correct: "れんあい", options: ["れんあい", "ぶんや", "ごぞんじ", "ひろう"] },
+            { kanji: "満足", correct: "まんぞく", options: ["まんぞく", "じゅんび", "しょかい", "ぜんぜん"] },
+            { kanji: "許可", correct: "きょか", options: ["きょか", "あやまる", "すてる", "けいご"] },
+            { kanji: "連絡", correct: "れんらく", options: ["れんらく", "せいかつ", "ごぞんじ", "ずつう"] },
+            { kanji: "紹介", correct: "しょうかい", options: ["しょうかい", "くすり", "あたま", "ぶんや"] },
+            { kanji: "敬語", correct: "けいご", options: ["けいご", "しんぱい", "ひろう", "せいかく"] },
+            { kanji: "生活", correct: "せいかつ", options: ["せいかつ", "きょか", "すてる", "ごはん"] },
+            { kanji: "準備", correct: "じゅんび", options: ["じゅんび", "あたま", "れんあい", "しょうかい"] },
+            { kanji: "御飯", correct: "ごはん", options: ["ごはん", "けいご", "ずつう", "あやまる"] },
+            { kanji: "謝る", correct: "あやまる", options: ["あやまる", "ひろう", "ぶんや", "じゅんび"] },
+            { kanji: "拾う", correct: "ひろう", options: ["ひろう", "くすり", "しょうかい", "せいかつ"] },
+            { kanji: "捨てる", correct: "すてる", options: ["すてる", "ごはん", "まんぞく", "きょか"] },
+            { kanji: "ご存知", correct: "ごぞんじ", options: ["ごぞんじ", "せいかく", "れんらく", "あやまる"] },
+            { kanji: "頭痛", correct: "ずつう", options: ["ずつう", "ぶんや", "あたま", "じゅんび"] },
+            { kanji: "頭", correct: "あたま", options: ["あたま", "ひろう", "けいご", "しょうかい"] },
+            { kanji: "薬", correct: "くすり", options: ["くすり", "せいかつ", "すてる", "れんあい"] },
+            { kanji: "分野", correct: "ぶんや", options: ["ぶんや", "ごぞんじ", "きょか", "あやまる"] }
+        ];
+
+        const quizContainer = document.getElementById("quiz");
+        const scoreElement = document.getElementById("score");
+        let score = 0;
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        shuffle(quizData);
+
+        quizData.forEach((item, index) => {
+            const questionDiv = document.createElement("div");
+            questionDiv.classList.add("question");
+
+            const questionTitle = document.createElement("h3");
+            questionTitle.textContent = `${index + 1}. Hiragana cho chữ '${item.question}' là gì ?`;
+            questionDiv.appendChild(questionTitle);
+
+            const answersDiv = document.createElement("div");
+            answersDiv.classList.add("answers");
+
+            shuffle(item.options);
+            item.options.forEach(option => {
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.onclick = () => {
+                    if (option === item.correct) {
+                        button.classList.add("correct");
+                        score++;
+                        scoreElement.textContent = `Score: ${score}`;
+                    } else {
+                        button.classList.add("incorrect");
+                        const correctAnswer = document.createElement("div");
+                        correctAnswer.textContent = `Correct Answer: ${item.correct}`;
+                        correctAnswer.classList.add("correct-answer");
+                        questionDiv.appendChild(correctAnswer);
+                    }
+                    answersDiv.querySelectorAll("button").forEach(btn => btn.disabled = true);
+                };
+                answersDiv.appendChild(button);
+            });
+
+            questionDiv.appendChild(answersDiv);
+            quizContainer.appendChild(questionDiv);
+        });
+    </script>
+</body>
+</html>

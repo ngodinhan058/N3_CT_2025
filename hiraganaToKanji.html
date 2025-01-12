@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanji Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question h3 {
+            margin-bottom: 10px;
+        }
+
+        .answers button {
+            margin-right: 10px;
+            padding: 10px;
+            border: none;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+
+        .answers button:hover {
+            background-color: #dcdcdc;
+        }
+
+        .answers button.correct {
+            background-color: #c8e6c9;
+        }
+
+        .answers button.incorrect {
+            background-color: #ffcdd2;
+        }
+
+        .correct-answer {
+            margin-top: 10px;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Kanji Quiz</h1>
+    <button onclick="window.location.href='index.html'">Kanji -> Hiragana</button>
+    <p>Chọn Hiragana đúng cho Kanji đã cho. Mỗi câu trả lời đúng sẽ cho bạn +1 điểm.</p>
+    <h2 id="score">Điểm: 0</h2>
+    <div id="quiz"></div>
+    <h2 id="score">Điểm: 0</h2>
+
+    <script>
+        const quizData = [
+            { question: "わらう", correct: "笑う", options: ["泣く", "迷う", "笑う", "困る"] },
+            { question: "なく", correct: "泣く", options: ["努力", "泣く", "首", "甘い"] },
+            { question: "かなしい", correct: "悲しい", options: ["悲しい", "参る", "割る", "生活"] },
+            { question: "まよう", correct: "迷う", options: ["助ける", "迷う", "洗う", "首"] },
+            { question: "どりょく", correct: "努力", options: ["牛", "努力", "野菜", "困る"] },
+            { question: "こまる", correct: "困る", options: ["呼ぶ", "甘い", "困る", "手首"] },
+            { question: "たすける", correct: "助ける", options: ["手首", "参る", "助ける", "笑う"] },
+            { question: "まいる", correct: "参る", options: ["迷う", "参る", "首", "生活"] },
+            { question: "せいかつ", correct: "生活", options: ["生活", "甘い", "洗う", "お皿"] },
+            { question: "よぶ", correct: "呼ぶ", options: ["呼ぶ", "割る", "努力", "迷う"] },
+            { question: "きめる", correct: "決める", options: ["決める", "甘い", "迷う", "困る"] },
+            { question: "わる", correct: "割る", options: ["参る", "割る", "生活", "努力"] },
+            { question: "あらう", correct: "洗う", options: ["お皿", "甘い", "洗う", "迷う"] },
+            { question: "くび", correct: "首", options: ["首", "野菜", "呼ぶ", "参る"] },
+            { question: "てくび", correct: "手首", options: ["手首", "困る", "牛", "努力"] },
+            { question: "おさら", correct: "お皿", options: ["お皿", "生活", "迷う", "泣く"] },
+            { question: "やさい", correct: "野菜", options: ["甘い", "野菜", "洗う", "参る"] },
+            { question: "ぎゅうにく", correct: "牛肉", options: ["努力", "牛肉", "お皿", "呼ぶ"] },
+            { question: "うし", correct: "牛", options: ["牛", "生活", "割る", "甘い"] },
+            { question: "あまい", correct: "甘い", options: ["首", "甘い", "洗う", "困る"] },
+        ];
+
+
+        const quizContainer = document.getElementById("quiz");
+        const scoreElement = document.getElementById("score");
+        let score = 0;
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        shuffle(quizData);
+
+        quizData.forEach((item, index) => {
+            const questionDiv = document.createElement("div");
+            questionDiv.classList.add("question");
+
+            const questionTitle = document.createElement("h3");
+            questionTitle.textContent = `${index + 1}. Hiragana cho chữ '${item.question}' là gì ?`;
+            questionDiv.appendChild(questionTitle);
+
+            const answersDiv = document.createElement("div");
+            answersDiv.classList.add("answers");
+
+            shuffle(item.options);
+            item.options.forEach(option => {
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.onclick = () => {
+                    if (option === item.correct) {
+                        button.classList.add("correct");
+                        score++;
+                        scoreElement.textContent = `Score: ${score}`;
+                    } else {
+                        button.classList.add("incorrect");
+                        const correctAnswer = document.createElement("div");
+                        correctAnswer.textContent = `Correct Answer: ${item.correct}`;
+                        correctAnswer.classList.add("correct-answer");
+                        questionDiv.appendChild(correctAnswer);
+                    }
+                    answersDiv.querySelectorAll("button").forEach(btn => btn.disabled = true);
+                };
+                answersDiv.appendChild(button);
+            });
+
+            questionDiv.appendChild(answersDiv);
+            quizContainer.appendChild(questionDiv);
+        });
+    </script>
+</body>
+
+</html>
