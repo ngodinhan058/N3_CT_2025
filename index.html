@@ -1,74 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kanji Quiz</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 40px;
+            background-color: #f9f9fc;
+            color: #333;
         }
-        .question {
-            margin-bottom: 20px;
-        }
-        .question h3 {
+
+        h1 {
+            font-size: 2.5em;
+            color: #2c3e50;
             margin-bottom: 10px;
+            text-align: center;
         }
+
+        button {
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        #score {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            color: #27ae60;
+            text-align: center;
+
+        }
+
+        .question {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            margin-bottom: 30px;
+            transition: 0.3s ease;
+        }
+
+        .question h3 {
+            margin-bottom: 20px;
+            color: #34495e;
+        }
+
+        .answers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
         .answers button {
-            margin-right: 10px;
-            padding: 10px;
-            border: none;
-            background-color: #f0f0f0;
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
             cursor: pointer;
-        }
-        .answers button:hover {
-            background-color: #dcdcdc;
-        }
-        .answers button.correct {
-            background-color: #c8e6c9;
-        }
-        .answers button.incorrect {
-            background-color: #ffcdd2;
-        }
-        .correct-answer {
-            margin-top: 10px;
-            color: green;
             font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .answers button:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .answers button.correct {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+        }
+
+        .answers button.incorrect {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+        }
+
+        .correct-answer {
+            margin-top: 12px;
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        button[disabled] {
+            cursor: not-allowed;
+            opacity: 0.7;
         }
     </style>
 </head>
+
 <body>
     <h1>Kanji Quiz</h1>
-    <button onclick="window.location.href='hiraganaToKanji.html'">Hiragana -> Kanji</button>
-    <p>Chọn Hiragana đúng cho Kanji đã cho. Mỗi câu trả lời đúng sẽ cho bạn +1 điểm.</p>
+    <!-- <button onclick="window.location.href='hiraganaToKanji.html'">Hiragana -> Kanji</button>
+    <p>Chọn Hiragana đúng cho Kanji đã cho. Mỗi câu trả lời đúng sẽ cho bạn +1 điểm.</p> -->
     <h2 id="score">Điểm: 0</h2>
     <div id="quiz"></div>
     <h2 id="score">Điểm: 0</h2>
 
     <script>
         const quizData = [
-            { kanji: "性格", correct: "せいかく", options: ["せいかく", "しんぱい", "れんあい", "じゅんび"] },
-            { kanji: "優勝", correct: "ゆうしょう", options: ["ゆうしょう", "ごはん", "まんぞく", "あたま"] },
-            { kanji: "心配", correct: "しんぱい", options: ["しんぱい", "きょか", "くすり", "せいかつ"] },
-            { kanji: "恋愛", correct: "れんあい", options: ["れんあい", "ぶんや", "ごぞんじ", "ひろう"] },
-            { kanji: "満足", correct: "まんぞく", options: ["まんぞく", "じゅんび", "しょかい", "ぜんぜん"] },
-            { kanji: "許可", correct: "きょか", options: ["きょか", "あやまる", "すてる", "けいご"] },
-            { kanji: "連絡", correct: "れんらく", options: ["れんらく", "せいかつ", "ごぞんじ", "ずつう"] },
-            { kanji: "紹介", correct: "しょうかい", options: ["しょうかい", "くすり", "あたま", "ぶんや"] },
-            { kanji: "敬語", correct: "けいご", options: ["けいご", "しんぱい", "ひろう", "せいかく"] },
-            { kanji: "生活", correct: "せいかつ", options: ["せいかつ", "きょか", "すてる", "ごはん"] },
-            { kanji: "準備", correct: "じゅんび", options: ["じゅんび", "あたま", "れんあい", "しょうかい"] },
-            { kanji: "御飯", correct: "ごはん", options: ["ごはん", "けいご", "ずつう", "あやまる"] },
-            { kanji: "謝る", correct: "あやまる", options: ["あやまる", "ひろう", "ぶんや", "じゅんび"] },
-            { kanji: "拾う", correct: "ひろう", options: ["ひろう", "くすり", "しょうかい", "せいかつ"] },
-            { kanji: "捨てる", correct: "すてる", options: ["すてる", "ごはん", "まんぞく", "きょか"] },
-            { kanji: "ご存知", correct: "ごぞんじ", options: ["ごぞんじ", "せいかく", "れんらく", "あやまる"] },
-            { kanji: "頭痛", correct: "ずつう", options: ["ずつう", "ぶんや", "あたま", "じゅんび"] },
-            { kanji: "頭", correct: "あたま", options: ["あたま", "ひろう", "けいご", "しょうかい"] },
-            { kanji: "薬", correct: "くすり", options: ["くすり", "せいかつ", "すてる", "れんあい"] },
-            { kanji: "分野", correct: "ぶんや", options: ["ぶんや", "ごぞんじ", "きょか", "あやまる"] }
-        ];
+            { "kanji": "若者", "correct": "わかもの", "options": ["わかもの", "ふつう", "けっこん", "ひつよう"] },
+            { "kanji": "結婚", "correct": "けっこん", "options": ["けっこん", "かんせい", "あんない", "へいわ"] },
+            { "kanji": "必要", "correct": "ひつよう", "options": ["ひつよう", "むり", "わしょく", "げんしょう"] },
+            { "kanji": "普通", "correct": "ふつう", "options": ["ふつう", "ぞうか", "そくほう", "むり"] },
+            { "kanji": "増加", "correct": "ぞうか", "options": ["ぞうか", "そうぞう", "げんしょう", "きたい"] },
+            { "kanji": "減少", "correct": "げんしょう", "options": ["げんしょう", "あんない", "わかもの", "りょうしん"] },
+            { "kanji": "想像", "correct": "そうぞう", "options": ["そうぞう", "ふつう", "むり", "わしょく"] },
+            { "kanji": "案内", "correct": "あんない", "options": ["あんない", "けっこん", "そくほう", "ひょうげん"] },
+            { "kanji": "速報", "correct": "そくほう", "options": ["そくほう", "げんしょう", "むり", "ひつよう"] },
+            { "kanji": "完成", "correct": "かんせい", "options": ["かんせい", "そうぞう", "ちこく", "けっこん"] },
+            { "kanji": "友達", "correct": "ともだち", "options": ["ともだち", "きたい", "ふつう", "りょうしん"] },
+            { "kanji": "平和", "correct": "へいわ", "options": ["へいわ", "むり", "ひょうげん", "ふつう"] },
+            { "kanji": "和食", "correct": "わしょく", "options": ["わしょく", "そうぞう", "あんない", "きたい"] },
+            { "kanji": "無理", "correct": "むり", "options": ["むり", "ふつう", "ちこく", "ひつよう"] },
+            { "kanji": "様子", "correct": "ようす", "options": ["ようす", "へいわ", "けっこん", "そくほう"] },
+            { "kanji": "期待", "correct": "きたい", "options": ["きたい", "かんせい", "あんない", "むり"] },
+            { "kanji": "遅刻", "correct": "ちこく", "options": ["ちこく", "わかもの", "りょうしん", "そうぞう"] },
+            { "kanji": "表現", "correct": "ひょうげん", "options": ["ひょうげん", "ふつう", "そくほう", "ひつよう"] },
+            { "kanji": "両親", "correct": "りょうしん", "options": ["りょうしん", "きたい", "ともだち", "へいわ"] }
+        ]
+            ;
 
         const quizContainer = document.getElementById("quiz");
         const scoreElement = document.getElementById("score");
@@ -120,4 +176,5 @@
         });
     </script>
 </body>
+
 </html>
